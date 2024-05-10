@@ -12,37 +12,45 @@ interface IRatings {
     rating_4: number;
     rating_5: number;
 }
+interface IUrlIcon {
+    large: string;
+    small: string;
+}
 
+interface IBook {
+    isbn13: number;
+    authors: string;
+    publication: number;
+    original_title: string;
+    title: string;
+    ratings: IRatings;
+    icons: IUrlIcon;
+}
 
+// use this function to format your response, see line 98 for example
+function formatBooks(books): IBook[] {
+    return books.map((book) => ({
+        isbn13: book.isbn13,
+        authors: book.authors,
+        publication: book.publication_year,
+        original_title: book.original_title,
+        title: book.title,
+        ratings: {
+            average: book.rating_avg,
+            count: book.rating_count,
+            rating_1: book.rating_1_star,
+            rating_2: book.rating_2_star,
+            rating_3: book.rating_3_star,
+            rating_4: book.rating_4_star,
+            rating_5: book.rating_5_star,
+        } as IRatings,
+        icons: {
+            large: book.image_url,
+            small: book.image_small_url,
+        } as IUrlIcon,
+    }));
+}
 
-
-
-booksRouter.get('/get_all_books', (request: Request, response: Response) => {
-    const theQuery = 'SELECT * FROM books';
-    const values = [];
-
-    pool.query(theQuery, values)
-        .then((result) => {
-            if (result.rowCount > 0) {
-                response.send({
-                    entries: result.rows,
-                });
-            } else {
-                response.status(404).send({
-                    message: "No Books found",
-                    code: 404,
-                });
-            }
-        })
-        .catch((error) => {
-            //log the error
-            console.error('DB Query error on GET by priority');
-            console.error(error);
-            response.status(500).send({
-                message: 'server error - contact support',
-            });
-        });
-})
 
 
 booksRouter.get('/get_by_rating', (request, response) => {
@@ -52,7 +60,7 @@ booksRouter.get('/get_by_rating', (request, response) => {
         pool.query(theQuery, values)
             .then((result) => {
                 response.send({
-                    books: result.rows,
+                    books: formatBooks(result.rows)
                 });
             })
             .catch((error) => {

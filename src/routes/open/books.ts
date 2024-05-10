@@ -14,6 +14,9 @@ interface IRatings {
 }
 
 
+
+
+
 booksRouter.get('/get_all_books', (request: Request, response: Response) => {
     const theQuery = 'SELECT * FROM books';
     const values = [];
@@ -63,30 +66,25 @@ booksRouter.get('/get_by_rating', (request, response) => {
 );
 
 // TODO: Change to DELETE
-booksRouter.get('/get_by_range', (request, response) => {
-    const theQuery = 'SELECT * FROM books WHERE publication_year >= $1 AND publication_year <= $2';
+booksRouter.delete('/delete_by_range', (request, response) => {
+    const theQuery = 'DELETE FROM books WHERE publication_year >= $1 AND publication_year <= $2';
     const values = [request.query.min, request.query.max];
 
     pool.query(theQuery, values)
         .then((result) => {
             response.send({
-                books: result.rows,
+                message: 'Books successfully deleted',
+                deletedCount: result.rowCount,
             });
         })
         .catch((error) => {
-            console.error('DB Query error on GET /book_by_range');
+            console.error('DB Query error on DELETE /delete_by_range');
             console.error(error);
             response.status(500).send({
                 message: 'Server error - contact support',
             });
         });
 });
-
-
-
-
-
-
 
 export {booksRouter};
 

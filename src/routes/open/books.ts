@@ -12,6 +12,7 @@ interface IRatings {
     rating_4: number;
     rating_5: number;
 }
+
 interface IUrlIcon {
     large: string;
     small: string;
@@ -53,8 +54,8 @@ function formatBooks(books): IBook[] {
 
 
 /**
- * @api {get} /books/get_by_rating Retrieve books by minimum rating
- * @apiDescription Retrieves books from the database that have an average rating greater than or equal to the specified minimum rating.
+ * @api {get} /books/get_by_rating/:rating Retrieve books by average rating
+ * @apiDescription Retrieves books from the database that have an average rating of the rating specified, rounded down to the nearest integer.
  * @apiName GetByRating
  * @apiGroup Books
  * @apiParam {Number} rating The minimum average rating to filter books by. Must be between 1 and 5 inclusive.
@@ -63,7 +64,7 @@ function formatBooks(books): IBook[] {
  * @apiError (404: No Books Found) {String} message "No books found with that rating."
  * @apiError (500: Server Error) {String} message "Server error - contact support."
  */
-booksRouter.get('/get_by_rating', (request, response) => {
+booksRouter.get('/get_by_rating/:rating', (request, response) => {
     if (!request.query.rating) {
         return response.status(400).send({ message: "Rating parameter is required." });
     }
@@ -73,7 +74,7 @@ booksRouter.get('/get_by_rating', (request, response) => {
         return response.status(400).send({ message: "Invalid rating parameter. Please specify a rating between 1 and 5." });
     }
 
-    const theQuery = 'SELECT * FROM books WHERE rating_avg >= $1';
+    const theQuery = 'SELECT * FROM books WHERE FLOOR(rating_avg) = $1';
     const values = [rating];
 
     pool.query(theQuery, values)
@@ -95,10 +96,31 @@ booksRouter.get('/get_by_rating', (request, response) => {
 });
 
 
-// TODO: Change to DELETE
-booksRouter.delete('/delete_by_range', (request, response) => {
+
+
+/**
+ * @api {delete} /books/delete_by_range/:min/:max Delete books by publication year
+ * @apiDescription Deletes book entries from the database based on their publication year falling within a specified range. This endpoint will return the number of deleted records.
+ * @apiName DeleteByPublicationYear
+ * @apiGroup Books
+ * @apiParam (Query Parameter) {Number} min The minimum publication year to filter and delete books by.
+ * @apiParam (Query Parameter) {Number} max The maximum publication year to filter and delete books by.
+ * @apiSuccess {String} message Confirmation message indicating successful deletion.
+ * @apiSuccess {Number} deletedCount The number of books deleted.
+ * @apiError (400: Invalid Parameters) {String} message "Invalid date parameters. Please ensure 'min' is less than 'max' and both are valid years."
+ * @apiError (404: No Books Found) {String} message "No books found within that date range."
+ * @apiError (500: Server Error) {String} message "Server error - contact support."
+ */
+booksRouter.delete('/books/delete_by_range/:min/:max', (request, response) => {
     const theQuery = 'DELETE FROM books WHERE publication_year >= $1 AND publication_year <= $2';
     const values = [request.query.min, request.query.max];
+
+    const min = parseInt(request.query.min as string);
+    const max = parseInt(request.query.max as string);
+
+    if (isNaN(min) || isNaN(max) || min > max) {
+        return response.status(400).send({ message: "Invalid date parameters. Please specify a min and max publication year. min must be less than max." });
+    }
 
     pool.query(theQuery, values)
         .then((result) => {

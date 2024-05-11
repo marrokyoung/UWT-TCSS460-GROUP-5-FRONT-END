@@ -85,7 +85,7 @@ booksRouter.get('/get_by_range', (request, response) => {
 });
 
 /**
- * @api {get} /books/:get_by_Otitle Request to retrieve an entry
+ * @api {get} /books/:get_by_Otitle Request to retrieve original title
  *
  * @apiDescription Request to retrieve the complete entry for <code>original_title</code>.
  *
@@ -94,9 +94,29 @@ booksRouter.get('/get_by_range', (request, response) => {
  *
  * @apiParam {string} title the original title to look up.
  *
- * @apiSuccess {String} entry The message associatd with <code>title</code>
+  * @apiSuccess (Success 200) {String[]} books the result of book as the following string:
+ *      "{<code>isbn13</code>: <code>books isbn13</code>,
+ *      <code>authors</code>: <code>books authors</code>,
+ *      <code>publication</code>: <code>books publication year</code>,
+ *      <code>original_title</code>: <code>books original title</code>,
+ *      <code>title</code>: <code>books title</code>,
+ *      <code>ratings</code>: {
+ *          <code>average</code>: <code>books average rating</code>,
+ *          <code>count</code>: <code>books count of total ratings</code>,
+ *          <code>rating_1</code>: <code>books count of 1 star ratings</code>,
+ *          <code>rating_2</code>: <code>books count of 2 star ratings</code>,
+ *          <code>rating_3</code>: <code>books count of 3 star ratings</code>,
+ *          <code>rating_4</code>: <code>books count of 4 star ratings</code>,
+ *          <code>rating_5</code>: <code>books count of 5 star ratings</code>
+ *      },
+ *      <code>icons</code>: {
+ *          <code>large</code>: <code>books large icon</code>,
+ *          <code>small</code>: <code>books small icon</code>,
+ *      }}"
  *
  * @apiError (404: Title Not Found) {string} message "Title not found"
+ * 
+ * @apiError (500: Server Error) {String} message "Server error - contact support."
  */
 
 booksRouter.get('/:get_by_Otitle', (request: Request, response: Response) => {
@@ -139,8 +159,9 @@ booksRouter.get('/:get_by_Otitle', (request: Request, response: Response) => {
  *
  * @apiSuccess {String} entry the string
  *      "Deleted: [<code>isbn13</code>] says: <code>message</code>"
- *
+ * 
  * @apiError (404: isbn13 Not Found) {String} message "isbn13 not found"
+ * @apiError (500: Server Error) {String} message "Server error - contact support."
  */
 
 booksRouter.delete('/:isbn13', (request: Request, response: Response) => {

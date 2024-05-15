@@ -222,8 +222,8 @@ booksRouter.delete('/delete_by_range', (request, response) => {
     const theQuery = 'DELETE FROM books WHERE publication_year >= $1 AND publication_year <= $2';
     const values = [request.query.min, request.query.max];
 
-    const min = parseInt(request.query.min as string);
-    const max = parseInt(request.query.max as string);
+    const min = parseInt(request.query.min as string, 10);
+    const max = parseInt(request.query.max as string, 10);
 
     if (isNaN(min) || isNaN(max) || min > max) {
         return response.status(400).send({ message: "Invalid date parameters. Please specify a min and max publication year. min must be less than max." });

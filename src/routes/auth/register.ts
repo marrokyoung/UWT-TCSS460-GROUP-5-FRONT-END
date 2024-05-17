@@ -1,5 +1,5 @@
 // express is the framework we're going to use to handle requests
-import express, { Request, Response, Router, NextFunction } from 'express';
+import express, {Request, Response, Router, NextFunction} from 'express';
 
 import jwt from 'jsonwebtoken';
 
@@ -24,27 +24,68 @@ export interface IUserRequest extends Request {
     id: number;
 }
 
+
 // Add more/your own password validation here. The *rules* must be documented
 // and the client-side validation should match these rules.
-const isValidPassword = (password: string): boolean =>
-    isStringProvided(password) && password.length > 7;
+/**
+ Minimum Length: The password must be at least 8 characters long.
+ Uppercase Letter: The password must contain at least one uppercase letter (A-Z).
+ Lowercase Letter: The password must contain at least one lowercase letter (a-z).
+ Digit: The password must contain at least one digit (0-9).
+ Special Character: The password must contain at least one special character (e.g., !@#$%^&*(),.?":{}|<>).
+ * @param password
+ */
+const isValidPassword = (password: string): boolean => {
+    if (!isStringProvided(password)) return false;
+    if (password.length < 8) return false;
+    if (!/[A-Z]/.test(password)) return false;
+    if (!/[a-z]/.test(password)) return false;
+    if (!/[0-9]/.test(password)) return false;
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return false;
+    return true;
+}
 
 // Add more/your own phone number validation here. The *rules* must be documented
 // and the client-side validation should match these rules.
-const isValidPhone = (phone: string): boolean =>
-    isStringProvided(phone) && phone.length >= 10;
+/**
+ * Only Numeric Characters and Optional Special Characters: The phone number must contain only digits, spaces, dashes, parentheses, and can optionally start with a '+'.
+ * Minimum Length: The phone number must contain at least 10 digits (after removing non-digit characters).
+ * @param phone
+ */
+const isValidPhone = (phone: string): boolean => {
+    if (!isStringProvided(phone)) return false;
+    const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
+    return phoneRegex.test(phone) && phone.replace(/\D/g, '').length >= 10;
+};
 
 // Add more/your own role validation here. The *rules* must be documented
 // and the client-side validation should match these rules.
-const isValidRole = (priority: string): boolean =>
-    validationFunctions.isNumberProvided(priority) &&
-    parseInt(priority) >= 1 &&
-    parseInt(priority) <= 5;
+/**
+ * Numeric Value: The priority must be a numeric value.
+ * Integer Check: The priority must be an integer.
+ * Range: The priority must be within the range of 1 to 5 (inclusive).
+ * @param priority
+ */
+const isValidRole = (priority: string): boolean => {
+    if (!isNumberProvided(priority)) return false;
+    const priorityNumber = parseInt(priority, 10);
+    if (isNaN(priorityNumber)) return false;
+    return Number.isInteger(priorityNumber) && priorityNumber >= 1 && priorityNumber <= 5;
+};
 
 // Add more/your own email validation here. The *rules* must be documented
 // and the client-side validation should match these rules.
-const isValidEmail = (email: string): boolean =>
-    isStringProvided(email) && email.includes('@');
+/**
+ * Presence of '@' Character: The email must contain exactly one '@' character.
+ * Valid Domain Structure: The email must have a valid domain structure, including a domain name and a top-level domain (e.g., example.com).
+ * No Special Characters or Spaces: The email should not have any special characters or spaces outside of the local part and domain name.
+ * @param email
+ */
+const isValidEmail = (email: string): boolean => {
+    if (!isStringProvided(email)) return false;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
 
 // middleware functions may be defined elsewhere!
 const emailMiddlewareCheck = (
@@ -240,4 +281,21 @@ registerRouter.get('/hash_demo', (request, response) => {
     });
 });
 
-export { registerRouter };
+
+registerRouter.get('/users', (request: Request, response: Response) => {
+    const theQuery = 'SELECT * FROM Account';
+    pool.query(theQuery)
+        .then((result) => {
+            response.status(200).send(result.rows);
+        })
+        .catch((error) => {
+            console.error('DB Query error on register when getting users');
+            console.error(error);
+            response.status(500).send({
+                message: 'server error - contact support',
+            });
+        });
+});
+
+
+export {registerRouter};

@@ -207,7 +207,15 @@ booksRouter.get('/:get_by_Otitle', (request: Request, response: Response) => {
         });
 });
 
-// Priority validation removed for now.
+/**
+ * @api {get} /books/create_new_book/
+ * @apiDescription creates new book entry in database.
+ * @apiName CreateNewBook
+ * @apiGroup Books
+ * @apiSuccess {Object} the book created containing isbn13, authors, publication year, original title, title, average rating, ratings count, icons.
+ * @apiError (409: No Books Found) {String} message "ISBN13 already exists"
+ * @apiError (500: Server Error) {String} message "Server error - contact support."
+ */
 booksRouter.post('/create_new_book', (request: Request, response: Response) => {
     const theQuery =
         'INSERT INTO books(ISBN13, Authors, Publication_year, Original_title, title, rating_avg, Rating_count,Rating_1_star,Rating_2_star,Rating_3_star,Rating_4_star,Rating_5_star,Image_url, Image_small_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *';
@@ -291,6 +299,33 @@ booksRouter.delete('/:isbn13', (request: Request, response: Response) => {
                 message: 'server error - contact support',
             });
         });
+});
+
+/**
+ * @api {get} /books/get_by_isbn/
+ * @apiDescription retrieves book information from the database based on ISBN.
+ * @apiName GetByISBN
+ * @apiGroup Books
+ * @apiSuccess {Object} books containing isbn13, authors, publication year, original title, title, average rating, ratings count, icons.
+ * @apiError (404: No Books Found) {String} message "No books found with that rating."
+ * @apiError (500: Server Error) {String} message "Server error - contact support."
+ */
+booksRouter.get('/get_by_isbn', (request: Request, response: Response) => {
+    const theQuery = 'SELECT * FROM books WHERE isbn13 = $1';
+    const values = [request.query.isbn];
+    pool.query(theQuery, values)
+        .then((result) => {
+            console.log("FART! Row-Count: " + result.rowCount);
+            if (result.rowCount == 1) {
+                response.send({
+                    entry: bookFormat(result.rows[0]),
+                });
+            } else {
+                response.status(404).send({
+                    message: 'ISBN not found',
+                });
+            }
+        })
 });
 
 export {booksRouter};

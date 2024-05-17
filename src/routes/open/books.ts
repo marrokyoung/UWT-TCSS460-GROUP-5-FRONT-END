@@ -207,7 +207,15 @@ booksRouter.get('/:get_by_Otitle', (request: Request, response: Response) => {
         });
 });
 
-// Priority validation removed for now.
+/**
+ * @api {get} /books/create_new_book/
+ * @apiDescription creates new book entry in database.
+ * @apiName CreateNewBook
+ * @apiGroup Books
+ * @apiSuccess {Object} the book created containing isbn13, authors, publication year, original title, title, average rating, ratings count, icons.
+ * @apiError (409: No Books Found) {String} message "ISBN13 already exists"
+ * @apiError (500: Server Error) {String} message "Server error - contact support."
+ */
 booksRouter.post('/create_new_book', (request: Request, response: Response) => {
     const theQuery =
         'INSERT INTO books(ISBN13, Authors, Publication_year, Original_title, title, rating_avg, Rating_count,Rating_1_star,Rating_2_star,Rating_3_star,Rating_4_star,Rating_5_star,Image_url, Image_small_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *';

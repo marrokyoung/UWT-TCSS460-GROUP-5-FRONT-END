@@ -63,11 +63,17 @@ function formatBooks(books): IBook[] {
 
 /**
  * @api {get} /books/get_by_rating/:rating Retrieve books by average rating
+ * 
  * @apiDescription Retrieves books from the database that have an average rating of the rating specified, rounded down to the nearest integer.
+ * 
  * @apiName GetByRating
+ * 
  * @apiGroup Books
+ * 
  * @apiParam {Number} rating The minimum average rating to filter books by. Must be between 1 and 5 inclusive.
+ * 
  * @apiSuccess {Object[]} books Array of books each containing isbn13, authors, publication year, original title, title, average rating, ratings count, icons.
+ * 
  * @apiError (400: Invalid Rating) {String} message "Invalid rating parameter. Please specify a rating between 1 and 5."
  * @apiError (404: No Books Found) {String} message "No books found with that rating."
  * @apiError (500: Server Error) {String} message "Server error - contact support."
@@ -108,13 +114,19 @@ booksRouter.get('/get_by_rating/:rating', (request, response) => {
 
 /**
  * @api {delete} /books/delete_by_range/:min/:max Delete books by publication year
+ * 
  * @apiDescription Deletes book entries from the database based on their publication year falling within a specified range. This endpoint will return the number of deleted records.
+ * 
  * @apiName DeleteByPublicationYear
+ * 
  * @apiGroup Books
+ * 
  * @apiParam (Query Parameter) {Number} min The minimum publication year to filter and delete books by.
  * @apiParam (Query Parameter) {Number} max The maximum publication year to filter and delete books by.
+ * 
  * @apiSuccess {String} message Confirmation message indicating successful deletion.
  * @apiSuccess {Number} deletedCount The number of books deleted.
+ * 
  * @apiError (400: Invalid Parameters) {String} message "Invalid date parameters. Please ensure 'min' is less than 'max' and both are valid years."
  * @apiError (404: No Books Found) {String} message "No books found within that date range."
  * @apiError (500: Server Error) {String} message "Server error - contact support."
@@ -146,6 +158,7 @@ booksRouter.delete('/books/delete_by_range/:min/:max', (request, response) => {
         });
 });
 
+// TODO: Update Documentation
 /**
  * @api {get} /books/:get_by_Otitle Request to retrieve original title
  *
@@ -181,9 +194,9 @@ booksRouter.delete('/books/delete_by_range/:min/:max', (request, response) => {
  * @apiError (500: Server Error) {String} message "Server error - contact support."
  */
 
-booksRouter.get('/:get_by_Otitle', (request: Request, response: Response) => {
+booksRouter.get('/get_by_title', (request: Request, response: Response) => {
     const theQuery = 'SELECT * FROM books WHERE original_title = $1';
-    const values = [request.params.get_by_Otitle];
+    const values = [request.query.title];
 
     pool.query(theQuery, values)
         .then((result) => {
@@ -208,15 +221,20 @@ booksRouter.get('/:get_by_Otitle', (request: Request, response: Response) => {
 });
 
 /**
- * @api {get} /books/create_new_book/
+ * @api {get} /books/create_new_book/ Create new Book
+ * 
  * @apiDescription creates new book entry in database.
+ * 
  * @apiName CreateNewBook
+ * 
  * @apiGroup Books
+ * 
  * @apiSuccess {Object} the book created containing isbn13, authors, publication year, original title, title, average rating, ratings count, icons.
+ * 
  * @apiError (409: No Books Found) {String} message "ISBN13 already exists"
  * @apiError (500: Server Error) {String} message "Server error - contact support."
  */
-booksRouter.post('/create_new_book', (request: Request, response: Response) => {
+booksRouter.post('/create_new_book', async (request: Request, response: Response) => {
     const theQuery =
         'INSERT INTO books(ISBN13, Authors, Publication_year, Original_title, title, rating_avg, Rating_count,Rating_1_star,Rating_2_star,Rating_3_star,Rating_4_star,Rating_5_star,Image_url, Image_small_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *';
     const values = [
@@ -236,31 +254,50 @@ booksRouter.post('/create_new_book', (request: Request, response: Response) => {
         request.body.image_small_url,
     ];
 
-    pool.query(theQuery, values)
-        .then((result) => {
-            response.status(201).send({
-                entry: result.rows[0],
+    try {
+        const isbnFound = await findISBN(request.body.isbn13);
+
+        if (isbnFound) {
+            console.error('ISBN13 already exists');
+            return response.status(409).send({
+                message: 'ISBN13 already exists',
             });
-        })
-        .catch((error) => {
-            console.error('DB Query error on POST');
-            console.error(error);
-            if (error.code === '23505') { 
-                console.error('ISBN13 already exists');
-                response.status(409).send({
-                    message: 'ISBN13 already exists',
-                });
-            } else {
-                response.status(500).send({
-                    message: 'Server error - contact support',
-                });
-            }
+        }
+
+        const result = await pool.query(theQuery, values);
+        response.status(201).send({
+            entry: result.rows[0],
         });
+
+    } catch (error) {
+        console.error('DB Query error on POST');
+        console.error(error);
+        response.status(500).send({
+            message: 'Server error - contact support',
+        });
+    }
 });
+
+//TODO: Add documentation
+async function findISBN(isbn13 : number): Promise<boolean> {
+    const theQuery = 'SELECT * FROM books WHERE isbn13 = $1';
+    const values = [isbn13];
+
+    try {
+        const result = await pool.query(theQuery, values);
+        console.log(result.rows[0]); // Log the first result row if it exists
+        return result.rowCount >= 1;
+    } catch (error) {
+        console.error('Error querying the database:', error);
+        return false;
+    }
+
+}
+
 
 
 /**
- * @api {delete} /message/:isbn Request to remove an entry
+ * @api {delete} /books/delete_by_isbn Request to remove an entry
  *
  * @apiDescription Request to remove an entry associated with <code>isbn</code> in the DB
  *
@@ -276,9 +313,9 @@ booksRouter.post('/create_new_book', (request: Request, response: Response) => {
  * @apiError (500: Server Error) {String} message "Server error - contact support."
  */
 
-booksRouter.delete('/:isbn13', (request: Request, response: Response) => {
+booksRouter.delete('/delete_by_isbn', (request: Request, response: Response) => {
     const theQuery = 'DELETE FROM books WHERE isbn13 = $1 RETURNING *';
-    const values = [request.params.isbn13];
+    const values = [request.query.isbn];
 
     pool.query(theQuery, values)
         .then((result) => {
@@ -302,11 +339,16 @@ booksRouter.delete('/:isbn13', (request: Request, response: Response) => {
 });
 
 /**
- * @api {get} /books/get_by_isbn/
+ * @api {get} /books/get_by_isbn/ get by ISBN
+ * 
  * @apiDescription retrieves book information from the database based on ISBN.
+ * 
  * @apiName GetByISBN
+ * 
  * @apiGroup Books
+ * 
  * @apiSuccess {Object} books containing isbn13, authors, publication year, original title, title, average rating, ratings count, icons.
+ * 
  * @apiError (404: No Books Found) {String} message "No books found with that rating."
  * @apiError (500: Server Error) {String} message "Server error - contact support."
  */

@@ -293,6 +293,33 @@ booksRouter.delete('/:isbn13', (request: Request, response: Response) => {
         });
 });
 
+/**
+ * @api {get} /books/get_by_isbn/
+ * @apiDescription retrieves book information from the database based on ISBN.
+ * @apiName GetByISBN
+ * @apiGroup Books
+ * @apiSuccess {Object} books containing isbn13, authors, publication year, original title, title, average rating, ratings count, icons.
+ * @apiError (404: No Books Found) {String} message "No books found with that rating."
+ * @apiError (500: Server Error) {String} message "Server error - contact support."
+ */
+booksRouter.get('/get_by_isbn', (request: Request, response: Response) => {
+    const theQuery = 'SELECT * FROM books WHERE isbn13 = $1';
+    const values = [request.query.isbn];
+    pool.query(theQuery, values)
+        .then((result) => {
+            console.log("FART! Row-Count: " + result.rowCount);
+            if (result.rowCount == 1) {
+                response.send({
+                    entry: bookFormat(result.rows[0]),
+                });
+            } else {
+                response.status(404).send({
+                    message: 'ISBN not found',
+                });
+            }
+        })
+});
+
 export {booksRouter};
 
 

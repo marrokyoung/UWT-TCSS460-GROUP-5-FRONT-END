@@ -187,7 +187,7 @@ booksRouter.put(
 
 booksRouter.get('/get_by_rating', (request: Request, response: Response) => {
     const ratingParam = request.query.rating;
-    const rating = parseInt(ratingParam as
+    const rating = parseInt(ratingParam as string)
     if (isNaN(rating) || rating < 1 || rating > 5) {
         return response.status(400).send({ message: "Invalid rating parameter. Please specify a rating between 1 and 5." });
     }

@@ -187,7 +187,7 @@ booksRouter.get('/get_by_rating', (request: Request, response: Response) => {
     pool.query(theQuery, values)
         .then((result) => {
             if (result.rows.length === 0) {
-                return response.status(404).send({ message: "No books found with that rating." });
+                return response.status(200).send({ message: "No books found with that rating." });
             }
             response.send({
                 books: formatBooks(result.rows)

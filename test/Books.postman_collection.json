@@ -7,23 +7,37 @@
 	},
 	"item": [
 		{
-			"name": "localhost:4000/books/books",
+			"name": "localhost:4000/books/update_by_ratings",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"",
-							"// Success Case (200)",
-							"pm.test(\"Response status should be 200\", () => {",
+							"// Check for successful response",
+							"pm.test(\"Response status should be 200\", function () {",
 							"    pm.response.to.have.status(200);",
-							"    pm.expect(pm.response.json()).to.have.property(\"message\", \"Rating successfully added\");",
+							"});",
+							"",
+							"// Validate success message",
+							"pm.test(\"Response should contain success message\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.have.property(\"message\", `Rating successfully added for book with ISBN: ${body.isbn13}`);",
 							"});",
 							"",
 							"// Error Case (404)",
 							"pm.test(\"Response status should be 404\", () => {",
 							"    pm.response.to.have.status(404);",
 							"    pm.expect(pm.response.json()).to.have.property(\"message\", \"ISBN not found, rating not added\");",
+							"});",
+							"",
+							"pm.test(\"Response status should be 400 for invalid rating\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"// Error Case (400)",
+							"pm.test(\"Response should contain invalid rating message\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.have.property(\"message\", \"Invalid rating. Please specify a rating between 1 and 5.\");",
 							"});",
 							""
 						],
@@ -34,13 +48,20 @@
 			],
 			"request": {
 				"auth": {
-					"type": "bearer"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoyLCJpZCI6MSwiaWF0IjoxNzE2MDA0NTU3LCJleHAiOjE3MTcyMTQxNTd9.Bd0Fk7gkSfuSZSifBwW4cvgBIjtSxOHqEHRjFLqiaIo",
+							"type": "string"
+						}
+					]
 				},
 				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "// Success Case (200)\r\n{\r\n    \"isbn13\": \"9780439023480\"\r\n}\r\n\r\n// // Error Case (404)\r\n// {\r\n//     \"rating\": 5,\r\n//     \"isbn13\": 1111111111111 // Non existing ISBN\r\n// }",
+					"raw": "// Success Case (200)\r\n{\r\n    \"rating\": 5,\r\n    \"isbn13\": \"9780439023480\"\r\n}\r\n\r\n// Error Case (404)\r\n{\r\n    \"rating\": 5,\r\n    \"isbn13\": 1111111111111 // Non existing ISBN\r\n}\r\n\r\n{\r\n    \"rating\": 6,    //invalid rating value\r\n    \"isbn13\": 9780439023480 // Non existing ISBN\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -56,6 +77,62 @@
 					"path": [
 						"books",
 						"update_by_ratings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:4000/books/get_by_isbn",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check for successful response\r",
+							"pm.test(\"Response status should be 200\", function () {\r",
+							"    if (pm.response.status === 200) {\r",
+							"        pm.response.to.have.status(200);\r",
+							"        const responseJson = pm.response.json();\r",
+							"        pm.expect(responseJson).to.have.property(\"entry\");\r",
+							"        pm.expect(responseJson.entry).to.have.property(\"isbn13\");\r",
+							"        pm.expect(responseJson.entry).to.have.property(\"authors\");\r",
+							"        pm.expect(responseJson.entry).to.have.property(\"publication_year\");\r",
+							"        pm.expect(responseJson.entry).to.have.property(\"original_title\");\r",
+							"        pm.expect(responseJson.entry).to.have.property(\"title\");\r",
+							"        pm.expect(responseJson.entry).to.have.property(\"average_rating\");\r",
+							"        pm.expect(responseJson.entry).to.have.property(\"ratings_count\");\r",
+							"        pm.expect(responseJson.entry).to.have.property(\"icons\");\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"// Test for ISBN not found (404)\r",
+							"pm.test(\"Response status should be 404 when ISBN not found\", function () {\r",
+							"    if (pm.response.status === 404) {\r",
+							"        pm.response.to.have.status(404);\r",
+							"        const responseJson = pm.response.json();\r",
+							"        pm.expect(responseJson).to.have.property(\"message\", \"ISBN not found\");\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:4000/books/get_by_isbn",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"books",
+						"get_by_isbn"
 					]
 				}
 			},

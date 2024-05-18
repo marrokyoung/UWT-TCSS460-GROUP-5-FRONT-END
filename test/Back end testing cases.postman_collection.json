@@ -1,0 +1,159 @@
+{
+	"info": {
+		"_postman_id": "62513b1a-0370-47a6-93e2-c0f2cdc1a2db",
+		"name": "Back end testing cases",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33979418"
+	},
+	"item": [
+		{
+			"name": "{{base_url}}/books/author/William Golding",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"Response status should be 201\", () => {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/books/author/William Golding",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"books",
+						"author",
+						"William Golding"
+					],
+					"query": [
+						{
+							"key": "Type",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{base_url}}/books/author/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"pm.test(\"Response status code is 404\", () => {",
+							"    pm.expect(pm.response.code).to.equal(404);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/books/author/author=William Golding",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"books",
+						"author",
+						"author=William Golding"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{base_url}}/books/delete_by_range",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Response status code is 400\", () => {",
+							"    pm.expect(pm.response.code).to.equal(400);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/books/books/delete_by_range/cfb/3",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"books",
+						"books",
+						"delete_by_range",
+						"cfb",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{base_url}}/books/delete_by_range/200 success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", () => {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/books/books/delete_by_range/-335/1785",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"books",
+						"books",
+						"delete_by_range",
+						"-335",
+						"1785"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

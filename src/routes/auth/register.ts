@@ -25,15 +25,20 @@ export interface IUserRequest extends Request {
 }
 
 
-// Add more/your own password validation here. The *rules* must be documented
-// and the client-side validation should match these rules.
 /**
- Minimum Length: The password must be at least 8 characters long.
- Uppercase Letter: The password must contain at least one uppercase letter (A-Z).
- Lowercase Letter: The password must contain at least one lowercase letter (a-z).
- Digit: The password must contain at least one digit (0-9).
- Special Character: The password must contain at least one special character (e.g., !@#$%^&*(),.?":{}|<>).
- * @param password
+ * @api {} Password Validation
+ * 
+ * @apiDescription Password Requirements:
+ * Minimum Length: The password must be at least 8 characters long.
+ * Uppercase Letter: The password must contain at least one uppercase letter (A-Z).
+ * Lowercase Letter: The password must contain at least one lowercase letter (a-z).
+ * Digit: The password must contain at least one digit (0-9).
+ * Special Character: The password must contain at least one special character (e.g., !@#$%^&*(),.?":{}|<>).
+ * 
+ * @apiName PasswordValidation
+ * @apiGroup Auth
+ * 
+ *  @apiParam {String} password The password to validate. Must adhere to above requirements.
  */
 const isValidPassword = (password: string): boolean => {
     if (!isStringProvided(password)) return false;
@@ -45,12 +50,17 @@ const isValidPassword = (password: string): boolean => {
     return true;
 }
 
-// Add more/your own phone number validation here. The *rules* must be documented
-// and the client-side validation should match these rules.
 /**
+ * @api {} Phone Number Validation
+ * 
+ * @apiDescription Phone Number Requirements:
  * Only Numeric Characters and Optional Special Characters: The phone number must contain only digits, spaces, dashes, parentheses, and can optionally start with a '+'.
  * Minimum Length: The phone number must contain at least 10 digits (after removing non-digit characters).
- * @param phone
+ * 
+ * @apiName PhoneNumberValidation
+ * @apiGroup Auth
+ * 
+ *  @apiParam {String} phone The phone number to validate. Must adhere to above requirements.
  */
 const isValidPhone = (phone: string): boolean => {
     if (!isStringProvided(phone)) return false;
@@ -58,13 +68,18 @@ const isValidPhone = (phone: string): boolean => {
     return phoneRegex.test(phone) && phone.replace(/\D/g, '').length >= 10;
 };
 
-// Add more/your own role validation here. The *rules* must be documented
-// and the client-side validation should match these rules.
 /**
+ * @api {} Role Validation
+ * 
+ * @apiDescription Role Requirements:
  * Numeric Value: The priority must be a numeric value.
  * Integer Check: The priority must be an integer.
  * Range: The priority must be within the range of 1 to 5 (inclusive).
- * @param priority
+ * 
+ * @apiName RoleValidation
+ * @apiGroup Auth
+ * 
+ *  @apiParam {String} priority The role to validate. Must adhere to above requirements.
  */
 const isValidRole = (priority: string): boolean => {
     if (!isNumberProvided(priority)) return false;
@@ -73,13 +88,18 @@ const isValidRole = (priority: string): boolean => {
     return Number.isInteger(priorityNumber) && priorityNumber >= 1 && priorityNumber <= 5;
 };
 
-// Add more/your own email validation here. The *rules* must be documented
-// and the client-side validation should match these rules.
 /**
+ * @api {} Email Validation
+ * 
+ * @apiDescription Email Requirements:
  * Presence of '@' Character: The email must contain exactly one '@' character.
  * Valid Domain Structure: The email must have a valid domain structure, including a domain name and a top-level domain (e.g., example.com).
  * No Special Characters or Spaces: The email should not have any special characters or spaces outside of the local part and domain name.
- * @param email
+ * 
+ * @apiName EmailValidation
+ * @apiGroup Auth
+ * 
+ * @apiParam {String} email The email to validate. Must adhere to above requirements.
  */
 const isValidEmail = (email: string): boolean => {
     if (!isStringProvided(email)) return false;
@@ -106,8 +126,18 @@ const emailMiddlewareCheck = (
 /**
  * @api {post} /register Request to register a user
  *
- * @apiDescription Document this route. !**Document the password rules here**!
- * !**Document the role rules here**!
+ * @apiDescription Document this route. 
+ * Password Requirements:
+ * Minimum Length: The password must be at least 8 characters long.
+ * Uppercase Letter: The password must contain at least one uppercase letter (A-Z).
+ * Lowercase Letter: The password must contain at least one lowercase letter (a-z).
+ * Digit: The password must contain at least one digit (0-9).
+ * Special Character: The password must contain at least one special character (e.g., !@#$%^&*(),.?":{}|<>).
+ * 
+ * Role Requirements:
+ * Numeric Value: The priority must be a numeric value.
+ * Integer Check: The priority must be an integer.
+ * Range: The priority must be within the range of 1 to 5 (inclusive).
  *
  * @apiName PostAuth
  * @apiGroup Auth

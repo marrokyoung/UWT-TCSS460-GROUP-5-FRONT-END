@@ -1,0 +1,214 @@
+{
+	"info": {
+		"_postman_id": "2cf9cdb5-5670-4886-8a5b-c779658b0abf",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28619886"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"// Test to check if the response contains the correct Content-Type header",
+							"pm.test(\"Response content type is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+							"});",
+							"// Test to validate response schema",
+							"pm.test(\"Response schema is valid\", function () {",
+							"  var schema = {",
+							"    type: \"object\",",
+							"    properties: {",
+							"      pagination: {",
+							"        type: \"object\",",
+							"        properties: {",
+							"          totalShownBooks: { type: \"number\" },",
+							"          totalBooks: { type: \"number\" },",
+							"          totalPages: { type: \"number\" },",
+							"          nextPage: { type: \"number\" },",
+							"          currentPage: { type: \"number\" },",
+							"          prevPage: { type: [\"number\", \"null\"] }",
+							"        },",
+							"        required: [\"totalShownBooks\", \"totalBooks\", \"totalPages\", \"nextPage\", \"currentPage\"]",
+							"      },",
+							"      books: {",
+							"        type: \"array\",",
+							"        items: {",
+							"          type: \"object\",",
+							"          properties: {",
+							"            isbn13: { type: \"string\" },",
+							"            authors: { type: \"string\" },",
+							"            publication: { type: \"number\" },",
+							"            original_title: { type: \"string\" },",
+							"            title: { type: \"string\" },",
+							"            ratings: {",
+							"              type: \"object\",",
+							"              properties: {",
+							"                average: { type: \"number\" },",
+							"                count: { type: \"number\" },",
+							"                rating_1: { type: \"number\" },",
+							"                rating_2: { type: \"number\" },",
+							"                rating_3: { type: \"number\" },",
+							"                rating_4: { type: \"number\" },",
+							"                rating_5: { type: \"number\" }",
+							"              },",
+							"              required: [\"average\", \"count\", \"rating_1\", \"rating_2\", \"rating_3\", \"rating_4\", \"rating_5\"]",
+							"            },",
+							"            icons: {",
+							"              type: \"object\",",
+							"              properties: {",
+							"                large: { type: \"string\" },",
+							"                small: { type: \"string\" }",
+							"              },",
+							"              required: [\"large\", \"small\"]",
+							"            }",
+							"          },",
+							"          required: [\"isbn13\", \"authors\", \"publication\", \"original_title\", \"title\", \"ratings\", \"icons\"]",
+							"        }",
+							"      }",
+							"    },",
+							"    required: [\"pagination\", \"books\"]",
+							"  };",
+							"",
+							"  pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;",
+							"});",
+							"// Add a test to check for the length of the response data",
+							"pm.test(\"The total number of books in the response should be greater than 0\", function () {",
+							"    const responseData = pm.response.json();",
+							"    const books = responseData.books;",
+							"",
+							"    pm.expect(books.length).to.be.greaterThan(0, \"There should be at least one book in the response\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoxLCJpZCI6MSwiaWF0IjoxNzE2MDAyNTQ3LCJleHAiOjE3MTcyMTIxNDd9._pp5EZCA4rYF9BPKFHTBZG0o1Us0M7InABo3MZS2_qI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:4000/books/get_all_books?page=1&limit=1",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"books",
+						"get_all_books"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 201\", function () {",
+							"    pm.expect(pm.response.code).to.equal(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"ISBN13 is a non-empty string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    responseData.books.forEach(function(book) {",
+							"        pm.expect(book.isbn13).to.be.a('string').and.to.have.lengthOf.at.least(1, \"ISBN13 should not be empty\");",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Authors is a non-empty string\", function () {",
+							"  const responseData = pm.response.json();",
+							"",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.books).to.be.an('array');",
+							"  responseData.books.forEach(function(book) {",
+							"    pm.expect(book.authors).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Authors should not be empty\");",
+							"  });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Books array is present and contains expected number of elements\", function () {",
+							"  const responseData = pm.response.json();",
+							"",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.books).to.exist.and.to.be.an('array');",
+							"  pm.expect(responseData.books).to.have.lengthOf.at.least(1, \"Books array should contain at least one element\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoxLCJpZCI6MSwiaWF0IjoxNzE2MDAyNTQ3LCJleHAiOjE3MTcyMTIxNDd9._pp5EZCA4rYF9BPKFHTBZG0o1Us0M7InABo3MZS2_qI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:4000/books/get_by_year/2012",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"books",
+						"get_by_year",
+						"2012"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -443,6 +443,7 @@ booksRouter.put(
     }
 );
 
+
 /**
  * @api {get} /books/get_by_title Request to retrieve original title
  *
@@ -561,7 +562,12 @@ booksRouter.post('/create_new_book', async (request: Request, response: Response
     }
 });
 
-//TODO: Add documentation
+/**
+ * A helper function to find a book with an isbn matching the parameter isbn.
+ * 
+ * @param isbn13 the isbn of the book 
+ * @returns true if book is found, false if not
+ */
 async function findISBN(isbn13 : number): Promise<boolean> {
     const theQuery = 'SELECT * FROM books WHERE isbn13 = $1';
     const values = [isbn13];

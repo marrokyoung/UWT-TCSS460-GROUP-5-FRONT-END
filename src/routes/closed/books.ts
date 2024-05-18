@@ -261,6 +261,124 @@ booksRouter.get('/get_all_books/', (request: Request, response: Response) => {
 });
 
 /**
+ * @api {get} /get_by_author/:author Request to retrieve author
+ *
+ * @apiDescription Request to retrieve books by author in the DB
+ *
+ * @apiName get_by_author
+ * @apiGroup Books
+ *
+ * @apiParam author the name of author
+ *
+ * @apiSuccess (Success 201) {String[]} books the aggregate of all books as the following string:
+ *      "{<code>isbn13</code>: <code>books isbn13</code>,
+ *      <code>authors</code>: <code>books authors</code>,
+ *      <code>publication</code>: <code>books publication year</code>,
+ *      <code>original_title</code>: <code>books original title</code>,
+ *      <code>title</code>: <code>books title</code>,
+ *      <code>ratings</code>: {
+ *          <code>average</code>: <code>books average rating</code>,
+ *          <code>count</code>: <code>books count of total ratings</code>,
+ *          <code>rating_1</code>: <code>books count of 1 star ratings</code>,
+ *          <code>rating_2</code>: <code>books count of 2 star ratings</code>,
+ *          <code>rating_3</code>: <code>books count of 3 star ratings</code>,
+ *          <code>rating_4</code>: <code>books count of 4 star ratings</code>,
+ *          <code>rating_5</code>: <code>books count of 5 star ratings</code>
+ *      },
+ *      <code>icons</code>: {
+ *          <code>large</code>: <code>books large icon</code>,
+ *          <code>small</code>: <code>books small icon</code>
+ *      }}"
+ *
+ *
+ * @apiError (404: Author not Found) {string} message "Author not found"
+ * @apiError (500: Server Error) {string} message "server error - contact support"
+ */
+booksRouter.get('/get_by_author/:author', (request, response) => {
+    const theQuery = 'SELECT * FROM books WHERE authors = $1';
+    const values = [request.params.author];
+
+    pool.query(theQuery, values)
+        .then((result) => {
+            if (result.rowCount >= 1) {
+                response.status(201).send({
+                    entry: result.rows,
+                });
+            } else {
+                response.status(404).send({
+                    message: 'Author not found',
+                });
+            }
+        })
+        .catch((error) => {
+            //log the error
+            console.error('DB Query error on GET /:get_by_author');
+            console.error(error);
+            response.status(500).send({
+                message: 'server error - contact support',
+            });
+        });
+});
+
+/**
+ * @api {get} /get_by_year/:year Request to retrieve year
+ *
+ * @apiDescription Request to retrieve books by year in the DB
+ *
+ * @apiName get_by_year
+ * @apiGroup Books
+ *
+ * @apiParam year publication year of book
+ *
+ * @apiSuccess (Success 201) {String[]} books the aggregate of all books as the following string:
+ *      "{<code>isbn13</code>: <code>books isbn13</code>,
+ *      <code>authors</code>: <code>books authors</code>,
+ *      <code>publication</code>: <code>books publication year</code>,
+ *      <code>original_title</code>: <code>books original title</code>,
+ *      <code>title</code>: <code>books title</code>,
+ *      <code>ratings</code>: {
+ *          <code>average</code>: <code>books average rating</code>,
+ *          <code>count</code>: <code>books count of total ratings</code>,
+ *          <code>rating_1</code>: <code>books count of 1 star ratings</code>,
+ *          <code>rating_2</code>: <code>books count of 2 star ratings</code>,
+ *          <code>rating_3</code>: <code>books count of 3 star ratings</code>,
+ *          <code>rating_4</code>: <code>books count of 4 star ratings</code>,
+ *          <code>rating_5</code>: <code>books count of 5 star ratings</code>
+ *      },
+ *      <code>icons</code>: {
+ *          <code>large</code>: <code>books large icon</code>,
+ *          <code>small</code>: <code>books small icon</code>,
+ *      }}"
+ *
+ * @apiError (404: Year not Found) {string} message "Year not found"
+ * @apiError (500: Server Error) {string} message "server error - contact support"
+ */
+booksRouter.get('/get_by_year/:year', (request, response) => {
+    const theQuery = 'SELECT * FROM books WHERE publication_year = $1';
+    const values = [request.params.year];
+
+    pool.query(theQuery, values)
+        .then((result) => {
+            if (result.rowCount >= 1) {
+                response.status(201).send({
+                    books: result.rows,
+                });
+            } else {
+                response.status(404).send({
+                    message: 'Year not found',
+                });
+            }
+        })
+        .catch((error) => {
+            console.error('DB Query error on GET /book_by_year');
+            console.error(error);
+            response.status(500).send({
+                message: 'Server error - contact support',
+            });
+        });
+});
+
+/**
  * @api {put} /books/update_by_ratings Request to update a books ratings
  *
  * @apiDescription Request to add a specific star rating of a book in the DB

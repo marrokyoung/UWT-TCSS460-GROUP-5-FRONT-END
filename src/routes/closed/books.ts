@@ -446,14 +446,14 @@ booksRouter.put(
 
 
 
-// TODO: Update Documentation
+
 
 /**
- * @api {get} /books/:get_by_Otitle Request to retrieve original title
+ * @api {get} /books/get_by_title Request to retrieve original title
  *
  * @apiDescription Request to retrieve the complete entry for <code>original_title</code>.
  *
- * @apiName get_by_Otitle
+ * @apiName get_by_title
  * @apiGroup Books
  *
  * @apiParam {string} title the original title to look up.
@@ -567,7 +567,12 @@ booksRouter.post('/create_new_book', async (request: Request, response: Response
     }
 });
 
-//TODO: Add documentation
+/**
+ * A helper function to find a book with an isbn matching the parameter isbn.
+ * 
+ * @param isbn13 the isbn of the book 
+ * @returns true if book is found, false if not
+ */
 async function findISBN(isbn13 : number): Promise<boolean> {
     const theQuery = 'SELECT * FROM books WHERE isbn13 = $1';
     const values = [isbn13];

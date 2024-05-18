@@ -1,0 +1,65 @@
+{
+	"info": {
+		"_postman_id": "50ca6a20-7f60-42ab-ac96-6cea9525334f",
+		"name": "Books",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34636990"
+	},
+	"item": [
+		{
+			"name": "localhost:4000/books/books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"// Success Case (200)",
+							"pm.test(\"Response status should be 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"    pm.expect(pm.response.json()).to.have.property(\"message\", \"Rating successfully added\");",
+							"});",
+							"",
+							"// Error Case (404)",
+							"pm.test(\"Response status should be 404\", () => {",
+							"    pm.response.to.have.status(404);",
+							"    pm.expect(pm.response.json()).to.have.property(\"message\", \"ISBN not found, rating not added\");",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "// Success Case (200)\r\n{\r\n    \"isbn13\": \"9780439023480\"\r\n}\r\n\r\n// // Error Case (404)\r\n// {\r\n//     \"rating\": 5,\r\n//     \"isbn13\": 1111111111111 // Non existing ISBN\r\n// }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:4000/books/update_by_ratings",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"books",
+						"update_by_ratings"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

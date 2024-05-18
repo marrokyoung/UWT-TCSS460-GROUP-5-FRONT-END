@@ -1,11 +1,9 @@
 import express, { Router } from 'express';
 
 import { messageRouter } from './message';
-import { booksRouter } from './books';
-
+// import { booksRouter } from '../closed/books';
 const openRoutes: Router = express.Router();
 
 openRoutes.use('/message', messageRouter);
-openRoutes.use('/books', booksRouter);
-
+// openRoutes.use('/books', booksRouter);
 export { openRoutes };

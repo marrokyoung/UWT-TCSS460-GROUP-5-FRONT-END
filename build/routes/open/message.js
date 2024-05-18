@@ -200,7 +200,7 @@ messageRouter.get('/', mwValidPriorityQuery, (request, response) => {
  */
 messageRouter.get('/:name', (request, response) => {
     const theQuery = 'SELECT name, message, priority FROM Demo WHERE name = $1';
-    const values = [request.params.name];
+    let values = [request.params.name];
     utilities_1.pool.query(theQuery, values)
         .then((result) => {
         if (result.rowCount == 1) {

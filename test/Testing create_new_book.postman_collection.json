@@ -1,0 +1,157 @@
+{
+	"info": {
+		"_postman_id": "387947f1-21dc-4df2-be37-1f566d34163c",
+		"name": "Testing create_new_book",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33857393"
+	},
+	"item": [
+		{
+			"name": "Existing Book",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"Response status should be 409\", () => {",
+							"    pm.response.to.have.status(409);",
+							"})",
+							"",
+							"",
+							"pm.test(\"Body has the field message\", () => {",
+							"    pm.expect(response).to.haveOwnProperty(\"message\");",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"isbn13\": 9780525478810,\n    \"authors\": \"John Green\",\n    \"publication_year\": \"2012\",\n    \"original_title\": \"The Fault in Our Stars\",\n    \"title\": \"The Fault in Our Stars\",\n    \"rating_avg\": \"4.26\",\n    \"rating_count\": \"2346404\",\n    \"rating_1_star\": \"47994\",\n    \"rating_2_star\": \"92723\",\n    \"rating_3_star\": \"327550\",\n    \"rating_4_star\": \"698471\",\n    \"rating_5_star\": \"1311871\",\n    \"image_url\": \"https://images.gr-assets.com/books/1360206420m/11870085.jpg\",\n    \"image_small_url\": \"https://images.gr-assets.com/books/1360206420s/11870085.jpg\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:4000/books/create_new_book",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"books",
+						"create_new_book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Existing Book Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"Response status should be 409\", () => {",
+							"    pm.response.to.have.status(409);",
+							"})",
+							"",
+							"",
+							"pm.test(\"Body has the field message\", () => {",
+							"    pm.expect(response).to.haveOwnProperty(\"message\");",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"isbn13\": 9780525478810,\n    \"authors\": \"John Green\",\n    \"publication_year\": \"2012\",\n    \"original_title\": \"The Fault in Our Stars\",\n    \"title\": \"The Fault in Our Stars\",\n    \"rating_avg\": \"4.26\",\n    \"rating_count\": \"2346404\",\n    \"rating_1_star\": \"47994\",\n    \"rating_2_star\": \"92723\",\n    \"rating_3_star\": \"327550\",\n    \"rating_4_star\": \"698471\",\n    \"rating_5_star\": \"1311871\",\n    \"image_url\": \"https://images.gr-assets.com/books/1360206420m/11870085.jpg\",\n    \"image_small_url\": \"https://images.gr-assets.com/books/1360206420s/11870085.jpg\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:4000/books/create_new_book",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"books",
+						"create_new_book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test New",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();",
+							"",
+							"pm.test(\"Response status should be 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"",
+							"",
+							"pm.test(\"Body has the field the\", () => {",
+							"    pm.expect(response).to.haveOwnProperty(\"the\");",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"isbn13\": 1234567890124,\n    \"authors\": \"test\",\n    \"publication_year\": \"2012\",\n    \"original_title\": \"test\",\n    \"title\": \"test\",\n    \"rating_avg\": \"4\",\n    \"rating_count\": \"1\",\n    \"rating_1_star\": \"0\",\n    \"rating_2_star\": \"0\",\n    \"rating_3_star\": \"0\",\n    \"rating_4_star\": \"1\",\n    \"rating_5_star\": \"0\",\n    \"image_url\": \"https://images.gr-assets.com/books/1360206420m/11870085.jpg\",\n    \"image_small_url\": \"https://images.gr-assets.com/books/1360206420s/11870085.jpg\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:4000/books/create_new_book",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"books",
+						"create_new_book"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

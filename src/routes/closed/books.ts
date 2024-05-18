@@ -265,7 +265,7 @@ booksRouter.get('/get_all_books/', (request: Request, response: Response) => {
  *
  * @apiDescription Request to retrieve books by author in the DB
  *
- * @apiName get_by_author
+ * @apiName GetByAuthor
  * @apiGroup Books
  *
  * @apiParam author the name of author
@@ -325,7 +325,7 @@ booksRouter.get('/get_by_author/:author', (request, response) => {
  *
  * @apiDescription Request to retrieve books by year in the DB
  *
- * @apiName get_by_year
+ * @apiName GetByYear
  * @apiGroup Books
  *
  * @apiParam year publication year of book
@@ -443,17 +443,12 @@ booksRouter.put(
     }
 );
 
-
-
-
-// TODO: Update Documentation
-
 /**
- * @api {get} /books/:get_by_Otitle Request to retrieve original title
+ * @api {get} /books/get_by_title Request to retrieve original title
  *
  * @apiDescription Request to retrieve the complete entry for <code>original_title</code>.
  *
- * @apiName get_by_Otitle
+ * @apiName GetByTitle
  * @apiGroup Books
  *
  * @apiParam {string} title the original title to look up.
@@ -482,7 +477,6 @@ booksRouter.put(
  * 
  * @apiError (500: Server Error) {String} message "Server error - contact support."
  */
-
 booksRouter.get('/get_by_title', (request: Request, response: Response) => {
     const theQuery = 'SELECT * FROM books WHERE original_title = $1';
     const values = [request.query.title];

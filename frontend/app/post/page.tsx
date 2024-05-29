@@ -8,7 +8,7 @@ import {createTheme, ThemeProvider} from "@mui/material";
 
 
 
-export default function Home() {
+export default function Post() {
     return (
         <Container>
             <Box
@@ -26,7 +26,7 @@ export default function Home() {
                 <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
                     Template for TCSS 460 SP24
                 </Typography>
-                <Link href="/post" color="secondary">
+                <Link href="/about" color="secondary">
                     Go to the about page
                 </Link>
             </Box>

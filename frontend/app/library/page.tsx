@@ -1,10 +1,11 @@
-`use client`; // With React, this file needs to be a client component in order to use React hooks (useState, useRouter, etc.)
 import * as React from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import {createTheme, ThemeProvider} from "@mui/material";
+
+
 
 
 export default function Home() {
@@ -27,9 +28,6 @@ export default function Home() {
                 </Typography>
                 <Link href="/post" color="secondary">
                     Go to the about page
-                </Link>
-                <Link href="/auth/login/" color="secondary">
-                    Go to the login page
                 </Link>
             </Box>
         </Container>

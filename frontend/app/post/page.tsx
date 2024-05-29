@@ -1,4 +1,3 @@
-`use client`; // With React, this file needs to be a client component in order to use React hooks (useState, useRouter, etc.)
 import * as React from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -7,7 +6,9 @@ import Link from "@mui/material/Link";
 import {createTheme, ThemeProvider} from "@mui/material";
 
 
-export default function Home() {
+
+
+export default function Post() {
     return (
         <Container>
             <Box
@@ -23,13 +24,10 @@ export default function Home() {
                     Material UI - Next.js App Router example in TypeScript
                 </Typography>
                 <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
-                    Main page for TCSS 460 SP24
+                    Template for TCSS 460 SP24
                 </Typography>
-                <Link href="/post" color="secondary">
+                <Link href="/about" color="secondary">
                     Go to the about page
-                </Link>
-                <Link href="/auth/login/" color="secondary">
-                    Go to the login page
                 </Link>
             </Box>
         </Container>

@@ -41,13 +41,6 @@ export default function Home() {
         />
       </div>
 
-      <div>
-        <h1>Welcome to My App</h1>
-        <Link href="/login">
-          Login
-        </Link>
-      </div>
-
       <div className={styles.grid}>
         <a
           href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
@@ -98,6 +91,16 @@ export default function Home() {
             Instantly deploy your Next.js site to a shareable URL with Vercel.
           </p>
         </a>
+
+        {/* Add Login Card */}
+        <Link href="/auth/login" className={styles.card}>
+          <h2>
+            Login <span>-&gt;</span>
+          </h2>
+          <p>
+            Access your account and manage your settings.
+          </p>
+        </Link>
       </div>
     </main>
   );

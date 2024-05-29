@@ -27,7 +27,7 @@ export default function Home() {
                     Main page for TCSS 460 SP24
                 </Typography>
                 <Link href="/post" color="secondary">
-                    Go to the about page
+                    Go to the post page
                 </Link>
             </Box>
         </Container>

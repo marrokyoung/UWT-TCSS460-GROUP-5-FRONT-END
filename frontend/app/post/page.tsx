@@ -28,7 +28,7 @@ const parse = (form: { isbn13: any; authors: any; publication_year: any; title: 
         success = false;
         errors.authors = "missing author"
     }
-    if (form.publication_year == null || Number.parseInt(form.publication_year) === form.publication_year) {
+    if (form.publication_year == null || !Number.isInteger(Number.parseInt(form.publication_year))) {
         success = false;
         errors.publication_year = "invalid publication year"
     }

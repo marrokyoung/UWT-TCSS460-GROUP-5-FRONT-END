@@ -28,7 +28,7 @@ const parse = (form: { isbn13: any; authors: any; publication_year: any; title: 
         success = false;
         errors.authors = "missing author"
     }
-    if (form.publication_year == null || Number.isInteger(form.publication_year)) {
+    if (form.publication_year == null || Number.parseInt(form.publication_year) === form.publication_year) {
         success = false;
         errors.publication_year = "invalid publication year"
     }
@@ -90,6 +90,7 @@ export default function Post() {
             title: data.get("title"),
             original_title: data.get("original title"),
         });
+        console.dir(validateFields)
         if(!validateFields.success) {
             const error: FormState = {
                 errors: validateFields.error?.fieldErrors,

@@ -519,9 +519,11 @@ booksRouter.get('/get_by_title', (request: Request, response: Response) => {
  * @apiError (500: Server Error) {String} message "Server error - contact support."
  */
 booksRouter.post('/create_new_book', async (request: Request, response: Response) => {
+
     const theQuery =
-        'INSERT INTO books(ISBN13, Authors, Publication_year, Original_title, title, rating_avg, Rating_count,Rating_1_star,Rating_2_star,Rating_3_star,Rating_4_star,Rating_5_star,Image_url, Image_small_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *';
+        'INSERT INTO books(id, ISBN13, Authors, Publication_year, Original_title, title, rating_avg, Rating_count,Rating_1_star,Rating_2_star,Rating_3_star,Rating_4_star,Rating_5_star,Image_url, Image_small_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING *';
     const values = [
+        0,
         request.body.isbn13,
         request.body.authors,
         request.body.publication_year,
@@ -547,7 +549,14 @@ booksRouter.post('/create_new_book', async (request: Request, response: Response
                 message: 'ISBN13 already exists',
             });
         }
-
+        const id = await getID();
+        if (id == -1) {
+            console.error('error when getting id');
+            return response.status(500).send({
+                message: 'unable to generate id',
+            });
+        }
+        values[0] = id;
         const result = await pool.query(theQuery, values);
         response.status(201).send({
             entry: result.rows[0],
@@ -582,7 +591,20 @@ async function findISBN(isbn13 : number): Promise<boolean> {
     }
 
 }
-
+/**
+ * A helper function to find the max id
+ */
+async function getID(): Promise<number> {
+    const theCountQuery = 'SELECT MAX(id) FROM books';
+    try {
+        const result = await pool.query(theCountQuery);
+        console.log(result.rows[0].max + 1); // Log the first result row if it exists
+        return result.rows[0].max + 1;
+    } catch (error) {
+        console.error('Error querying the database:', error);
+        return -1;
+    }
+}
 
 
 /**

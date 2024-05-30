@@ -4,12 +4,11 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
-import {Alert, createTheme, Input, TextField, ThemeProvider} from "@mui/material";
-import {Stack} from "@mui/system";
+import {Alert,TextField} from "@mui/material";
 import {Button} from "@mui/material";
 import {useState} from "react";
 
-const defaultTheme = createTheme();
+// const defaultTheme = createTheme();
 
 const parse = (form: { isbn13: any; authors: any; publication_year: any; title: any; original_title: any;}) => {
     let success = true;
@@ -130,7 +129,8 @@ export default function Post() {
     }
 
     return (
-        <ThemeProvider theme={defaultTheme}>
+        // <ThemeProvider theme={defaultTheme}>
+        <>
             {alert.showAlert &&
                 (<Alert
                     severity={alert.alertSeverity as any}
@@ -228,6 +228,7 @@ export default function Post() {
 
                 </Box>
             </Container>
-        </ThemeProvider>
+        </>
+        // </ThemeProvider>
     );
 }

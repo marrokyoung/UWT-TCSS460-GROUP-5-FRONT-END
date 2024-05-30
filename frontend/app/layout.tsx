@@ -1,19 +1,25 @@
-import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
-import EmailIcon from "@mui/icons-material/Email";
-import SendIcon from "@mui/icons-material/Send";
+"use client"
+import {AppBar, Box, createTheme, IconButton, ThemeProvider, Toolbar, Typography} from "@mui/material";
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-import Link from "next/link";
+import {orange, purple} from "@mui/material/colors";
 
 export default function MessagesLayout({
                                          children, // will be a page or nested layout
                                        }: {
   children: React.ReactNode;
 }) {
+    const defaultTheme = createTheme({
+        palette: {
+            primary: orange,
+            secondary: purple,
+        },
+    });
   return (
       <html lang="en" suppressHydrationWarning={true}>
       <body>
       <section>
+          <ThemeProvider theme={defaultTheme}>
         {/* Include shared UI here e.g. a header or sidebar */}
         <AppBar position="static">
           <Toolbar>
@@ -36,6 +42,7 @@ export default function MessagesLayout({
         </AppBar>
 
         {children}
+          </ThemeProvider>
       </section>
       </body>
       </html>

@@ -31,6 +31,9 @@ export default function Home() {
                 <Link href="/auth/login/" color="secondary">
                     Go to the login page
                 </Link>
+                <Link href="/auth/register/" color="secondary">
+                    Go to the register page
+                </Link>
             </Box>
         </Container>
     );

@@ -34,6 +34,9 @@ export default function Home() {
                 <Link href ="/put" color ="secondary">
                     Go to the update ratings page
                 </Link>
+                <Link href="/auth/register/" color="secondary">
+                    Go to the register page
+                </Link>
             </Box>
         </Container>
     );

@@ -716,7 +716,14 @@ booksRouter.get('/get_by_isbn', (request: Request, response: Response) => {
                     message: 'ISBN not found',
                 });
             }
-        })
+        }).catch((error) => {
+        //log the error
+        console.error('DB Query error on GET ISBN');
+        console.error(error);
+        response.status(500).send({
+            message: 'server error - contact support',
+        });
+    });
 });
 
 // "return" the router

@@ -31,6 +31,9 @@ export default function Home() {
                 <Link href="/auth/login/" color="secondary">
                     Go to the login page
                 </Link>
+                <Link href ="/put" color ="secondary">
+                    Go to the update ratings page
+                </Link>
             </Box>
         </Container>
     );

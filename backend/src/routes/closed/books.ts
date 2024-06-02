@@ -83,25 +83,52 @@ function formatBooks(books): IBook[] {
 
 booksRouter.get('/get_by_rating', (request: Request, response: Response) => {
     const ratingParam = request.query.rating;
-    const rating = parseInt(ratingParam as string)
+    const rating = parseInt(ratingParam as string);
+    const page: number = +request.query.page || 1;
+    const limit: number = +request.query.limit || 50;
+
     if (isNaN(rating) || rating < 1 || rating > 5) {
         return response.status(400).send({ message: "Invalid rating parameter. Please specify a rating between 1 and 5." });
     }
 
-    const theQuery = 'SELECT * FROM books WHERE FLOOR(rating_avg) = $1';
-    const values = [rating];
-
-    pool.query(theQuery, values)
+    const countQuery = 'SELECT COUNT(*) AS total FROM books WHERE FLOOR(rating_avg) = $1';
+    pool.query(countQuery, [rating])
         .then((result) => {
-            if (result.rows.length === 0) {
-                return response.status(200).send({ message: "No books found with that rating." });
+            const totalBooks: number = parseInt(result.rows[0].total);
+            const totalPages: number = Math.ceil(totalBooks / limit);
+            const offset = (page - 1) * limit;
+
+            if (page < 1 || page > totalPages) {
+                return response.status(400).send({
+                    message: `Invalid page parameter. Please specify a page between 1 and ${totalPages}.`,
+                });
             }
-            response.send({
-                books: formatBooks(result.rows)
+
+            const booksQuery = 'SELECT * FROM books WHERE FLOOR(rating_avg) = $1 LIMIT $2 OFFSET $3';
+            const values = [rating, limit, offset];
+            pool.query(booksQuery, values).then((booksResult) => {
+                if (booksResult.rowCount > 0) {
+                    const formattedBooks = formatBooks(booksResult.rows);
+                    response.send({
+                        pagination: {
+                            totalShownBooks: limit,
+                            totalBooks: totalBooks,
+                            totalPages: totalPages,
+                            nextPage: page < totalPages ? page + 1 : null,
+                            currentPage: page,
+                            prevPage: page > 1 ? page - 1 : null,
+                        },
+                        books: formattedBooks,
+                    });
+                } else {
+                    response.status(404).send({
+                        message: 'No Books found',
+                        code: 404,
+                    });
+                }
             });
         })
         .catch((error) => {
-
             console.error('DB Query error on GET /get_by_rating');
             console.error(error);
             response.status(500).send({
@@ -301,8 +328,9 @@ booksRouter.get('/get_by_author/:author', (request, response) => {
     pool.query(theQuery, values)
         .then((result) => {
             if (result.rowCount >= 1) {
-                response.status(201).send({
-                    entry: result.rows,
+                const formattedBooks = formatBooks(result.rows);
+                response.status(200).send({
+                    books: formattedBooks,
                 });
             } else {
                 response.status(404).send({
@@ -353,24 +381,54 @@ booksRouter.get('/get_by_author/:author', (request, response) => {
  * @apiError (404: Year not Found) {string} message "Year not found"
  * @apiError (500: Server Error) {string} message "server error - contact support"
  */
-booksRouter.get('/get_by_year/:year', (request, response) => {
-    const theQuery = 'SELECT * FROM books WHERE publication_year = $1';
-    const values = [request.params.year];
+booksRouter.get('/get_by_year/:year', (request: Request, response: Response) => {
+    const year = parseInt(request.params.year);
+    const page: number = +request.query.page || 1;
+    const limit: number = +request.query.limit || 50;
 
-    pool.query(theQuery, values)
+    if (isNaN(year)) {
+        return response.status(400).send({ message: "Invalid year parameter. Please specify a valid year." });
+    }
+
+    const countQuery = 'SELECT COUNT(*) AS total FROM books WHERE publication_year = $1';
+    pool.query(countQuery, [year])
         .then((result) => {
-            if (result.rowCount >= 1) {
-                response.status(201).send({
-                    books: result.rows,
-                });
-            } else {
-                response.status(404).send({
-                    message: 'Year not found',
+            const totalBooks: number = parseInt(result.rows[0].total);
+            const totalPages: number = Math.ceil(totalBooks / limit);
+            const offset = (page - 1) * limit;
+
+            if (page < 1 || page > totalPages) {
+                return response.status(400).send({
+                    message: `Invalid page parameter. Please specify a page between 1 and ${totalPages}.`,
                 });
             }
+
+            const booksQuery = 'SELECT * FROM books WHERE publication_year = $1 LIMIT $2 OFFSET $3';
+            const values = [year, limit, offset];
+            pool.query(booksQuery, values).then((booksResult) => {
+                if (booksResult.rowCount > 0) {
+                    const formattedBooks = formatBooks(booksResult.rows);
+                    response.send({
+                        pagination: {
+                            totalShownBooks: limit,
+                            totalBooks: totalBooks,
+                            totalPages: totalPages,
+                            nextPage: page < totalPages ? page + 1 : null,
+                            currentPage: page,
+                            prevPage: page > 1 ? page - 1 : null,
+                        },
+                        books: formattedBooks,
+                    });
+                } else {
+                    response.status(404).send({
+                        message: 'No Books found',
+                        code: 404,
+                    });
+                }
+            });
         })
         .catch((error) => {
-            console.error('DB Query error on GET /book_by_year');
+            console.error('DB Query error on GET /get_by_year');
             console.error(error);
             response.status(500).send({
                 message: 'Server error - contact support',
@@ -479,14 +537,15 @@ booksRouter.put(
  * @apiError (500: Server Error) {String} message "Server error - contact support."
  */
 booksRouter.get('/get_by_title', (request: Request, response: Response) => {
-    const theQuery = 'SELECT * FROM books WHERE original_title = $1';
+    const theQuery = 'SELECT * FROM books WHERE original_title = $1 OR title = $1';
     const values = [request.query.title];
 
     pool.query(theQuery, values)
         .then((result) => {
             if (result.rowCount == 1) {
+                const formattedBooks = formatBooks(result.rows);
                 response.send({
-                    entry: result.rows[0],
+                    books: formattedBooks,
                 });
             } else {
                 response.status(404).send({
@@ -648,8 +707,9 @@ booksRouter.get('/get_by_isbn', (request: Request, response: Response) => {
         .then((result) => {
             console.log("FART! Row-Count: " + result.rowCount);
             if (result.rowCount == 1) {
+                const formattedBooks = formatBooks(result.rows);
                 response.send({
-                    entry: bookFormat(result.rows[0]),
+                    books: formattedBooks,
                 });
             } else {
                 response.status(404).send({

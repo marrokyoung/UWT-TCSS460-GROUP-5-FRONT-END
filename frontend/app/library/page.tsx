@@ -3,7 +3,7 @@
 import * as React from "react";
 import axios, { AxiosError } from "axios";
 import { IBook } from '../../../backend/src/closed/books';
-import { Container, Box, Typography, Link, Card, CardContent, CardActions, CardMedia, TextField, Select, MenuItem, FormControl, InputLabel, Pagination } from '@mui/material';
+import { Container, Box, Typography, Link, Card, CardContent, CardActions, CardMedia, TextField, Select, MenuItem, FormControl, InputLabel, Pagination, Rating } from '@mui/material';
 import { CircularProgress } from "@mui/material";
 
 function isAxiosError(error: unknown): error is AxiosError {
@@ -32,16 +32,24 @@ export default function LibraryPage() {
                         : await axios.get('http://localhost:4000/books/get_by_title', { params: { ...params, title: search } });
                     break;
                 case 'author':
-                    response = await axios.get(`http://localhost:4000/books/get_by_author/${search}`, { params: { ...params, author: search } });
+                    response = search === '' 
+                        ? await axios.get('http://localhost:4000/books/get_all_books', { params })
+                        : await axios.get(`http://localhost:4000/books/get_by_author/${search}`, { params });
                     break;
                 case 'isbn13':
-                    response = await axios.get('http://localhost:4000/books/get_by_isbn', { params: { ...params, isbn: search } });
+                    response = search === '' 
+                        ? await axios.get('http://localhost:4000/books/get_all_books', { params })
+                        : await axios.get('http://localhost:4000/books/get_by_isbn', { params: { ...params, isbn: search } });
                     break;
                 case 'ratings.average':
-                    response = await axios.get('http://localhost:4000/books/get_by_rating', { params: { ...params, rating: search } });
+                    response = search === '' 
+                        ? await axios.get('http://localhost:4000/books/get_all_books', { params })
+                        : await axios.get('http://localhost:4000/books/get_by_rating', { params: { ...params, rating: search } });
                     break;
                 case 'year':
-                    response = await axios.get(`http://localhost:4000/books/get_by_year/${search}`, { params: { ...params, year: search } });
+                    response = search === '' 
+                        ? await axios.get('http://localhost:4000/books/get_all_books', { params })
+                        : await axios.get(`http://localhost:4000/books/get_by_year/${search}`, { params: { ...params, year: search } });
                     break;
                 default:
                     throw new Error("Invalid search parameter");
@@ -86,7 +94,7 @@ export default function LibraryPage() {
         } else if (value === 'isbn13') {
             label = 'Search by ISBN';
         } else if (value === 'ratings.average') {
-            label = 'Search by Avg. Rating';
+            label = 'Search by Avg. Rating and higher';
         } else if (value === 'year') {
             label = 'Search by Year';
         }
@@ -176,32 +184,33 @@ export default function LibraryPage() {
                         <Typography variant="body1" sx={{ color: 'white' }}>{error}</Typography>
                     ) : books.length > 0 ? (
                         books.map((book, index) => {
-                            //console.log('Book image URL:', book.icons?.small);
+                            console.log('Book image URL:', book.icons?.small);
                             return (
                                 <Card key={book.isbn13 || index} sx={{ mb: 2, display: 'flex', backgroundColor: 'white', color: 'white' }}>
                                     <CardMedia
                                         component="img"
                                         sx={{ width: 150 }}
-                                        image={book.icons?.small ?? book.image_small_url}
+                                        image={book.icons?.small || ''}
                                         alt={book.title}
                                     />
                                     <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                                         <CardContent>
                                             <Typography variant="h5" component="div" sx={{ color: 'black' }}>
-                                                {book.title}
+                                                {book.title || 'No title available'}
                                             </Typography>
                                             <Typography variant="body2" sx={{ color: 'gray' }}>
                                                 by {book.authors || 'Unknown author'}
                                             </Typography>
                                             <Typography variant="body2" sx={{ color: 'gray' }}>
-                                                Average Rating: {book.ratings?.average ?? book.rating_avg}
+                                                ISBN: {book.isbn13 || 'Unknown'}
                                             </Typography>
+                                            <Rating
+                                                name={`rating-${book.isbn13}`}
+                                                value={book.ratings?.average || 0}
+                                                precision={0.1}
+                                                readOnly
+                                            />
                                         </CardContent>
-                                        <CardActions>
-                                            <Link href={`/books/${book.isbn13}`} color="secondary">
-                                                Learn More
-                                            </Link>
-                                        </CardActions>
                                     </Box>
                                 </Card>
                             );

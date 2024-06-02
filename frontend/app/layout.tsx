@@ -1,7 +1,8 @@
 "use client"
-import {AppBar, Box, createTheme, IconButton, ThemeProvider, Toolbar, Typography} from "@mui/material";
+import {AppBar, Box, Button, createTheme, IconButton, ThemeProvider, Toolbar, Typography} from "@mui/material";
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import LoginIcon from '@mui/icons-material/Login';
 import {orange, purple} from "@mui/material/colors";
 
 export default function MessagesLayout({
@@ -37,6 +38,12 @@ export default function MessagesLayout({
               <IconButton href="/post" color="inherit">
                 <UploadFileIcon />
               </IconButton>
+                <Button variant="contained" href="/auth/login" color="inherit">
+                    Log In
+                </Button>
+                {/*<IconButton href="/auth/login" color="inherit">*/}
+                {/*    <LoginIcon />*/}
+                {/*</IconButton>*/}
             </Box>
           </Toolbar>
         </AppBar>

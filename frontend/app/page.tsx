@@ -31,12 +31,9 @@ export default function Home() {
                 <Link href="/auth/login/" color="secondary">
                     Go to the login page
                 </Link>
-<<<<<<< HEAD
                 <Link href ="/put" color ="secondary">
                     Go to the update ratings page
                 </Link>
-=======
->>>>>>> main
                 <Link href="/auth/register/" color="secondary">
                     Go to the register page
                 </Link>

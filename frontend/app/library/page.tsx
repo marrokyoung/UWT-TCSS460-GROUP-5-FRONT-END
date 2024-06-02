@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
 import * as React from "react";
 import axios, { AxiosError } from "axios";
 import { IBook } from '../../../backend/src/closed/books';
-import { Container, Box, Typography, Link, Card, CardContent, CardActions, CardMedia, TextField, Select, MenuItem, FormControl, InputLabel, Pagination, Rating } from '@mui/material';
+import { Container, Box, Typography, Link, Card, CardContent, CardActions, CardMedia, TextField, Select, MenuItem, FormControl, InputLabel, Pagination, Rating, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 import { CircularProgress } from "@mui/material";
 
 function isAxiosError(error: unknown): error is AxiosError {
@@ -20,6 +20,18 @@ export default function LibraryPage() {
     const [page, setPage] = React.useState(1);
     const [limit, setLimit] = React.useState(10);
     const [totalPages, setTotalPages] = React.useState(1);
+    const [open, setOpen] = React.useState(false);
+    const [selectedBook, setSelectedBook] = React.useState<IBook | null>(null);
+
+    const handleClickOpen = (book: IBook) => {
+        setSelectedBook(book);
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        setSelectedBook(null);
+    };
 
     const fetchBooks = async () => {
         try {
@@ -186,7 +198,7 @@ export default function LibraryPage() {
                         books.map((book, index) => {
                             console.log('Book image URL:', book.icons?.small);
                             return (
-                                <Card key={book.isbn13 || index} sx={{ mb: 2, display: 'flex', backgroundColor: 'white', color: 'white' }}>
+                                <Card key={book.isbn13 || index} sx={{ mb: 2, display: 'flex', backgroundColor: 'white', color: 'white' }} onClick={() => handleClickOpen(book)}>
                                     <CardMedia
                                         component="img"
                                         sx={{ width: 150 }}
@@ -246,6 +258,61 @@ export default function LibraryPage() {
                     </Box>
                 </Box>
             </Box>
+            <Dialog open={open} onClose={handleClose} aria-labelledby="book-dialog-title" aria-describedby="book-dialog-description">
+                <DialogTitle id="book-dialog-title">{selectedBook?.title}</DialogTitle>
+                <DialogContent>
+                    <CardMedia
+                        component="img"
+                        sx={{ width: '100%' }}
+                        image={selectedBook?.icons.large}
+                        alt={selectedBook?.title}
+                    />
+                    <DialogContentText id="book-dialog-description">
+                        <Typography variant="body2" sx={{ color: 'gray' }}>
+                            by {selectedBook?.authors || 'Unknown author'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'gray' }}>
+                            Published: {selectedBook?.publication}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'gray' }}>
+                            ISBN: {selectedBook?.isbn13 || 'Unknown'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'gray' }}>
+                            1 Rating: {selectedBook?.ratings.rating_1 ?? 'N/A'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'gray' }}>
+                            2 Rating: {selectedBook?.ratings.rating_2 ?? 'N/A'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'gray' }}>
+                            3 Rating: {selectedBook?.ratings.rating_3 ?? 'N/A'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'gray' }}>
+                            4 Rating: {selectedBook?.ratings.rating_4 ?? 'N/A'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'gray' }}>
+                            5 Rating: {selectedBook?.ratings.rating_5 ?? 'N/A'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'gray' }}>
+                            Total Ratings: {selectedBook?.ratings.count ?? 'N/A'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'gray' }}>
+                            Average Rating: {selectedBook?.ratings.average ?? 'N/A'}
+                        </Typography>
+                        <Rating
+                            name={`rating-${selectedBook?.isbn13}`}
+                            value={selectedBook?.ratings?.average || 0}
+                            precision={0.1}
+                            readOnly
+                        />
+                        {/* Add more detailed information here */}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 }

@@ -208,6 +208,9 @@ export default function LibraryPage() {
                 <Typography variant="h2" component="h1" sx={{ mb: 2, color: 'black' }}>
                     Start Browsing Now
                 </Typography>
+                <Link href="../home" color="secondary">
+                    Go to the home page
+                </Link>
                 {/*<Link href="/post" color="secondary">*/}
                 {/*    Go to the about page*/}
                 {/*</Link>*/}

@@ -748,6 +748,5 @@ booksRouter.get('/get_by_isbn', (request: Request, response: Response) => {
     });
 });
 
-// "return" the router
-export {booksRouter};
+export { booksRouter, type IBook };
 

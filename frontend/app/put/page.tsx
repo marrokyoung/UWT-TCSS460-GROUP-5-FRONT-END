@@ -86,7 +86,7 @@ const UpdateBookRatingsForm = () => {
           <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
             Update Book Rating
           </Typography>
-          <Link href="../" color="secondary">
+          <Link href="../home" color="secondary">
             Go to the home page
           </Link>
         </Box>

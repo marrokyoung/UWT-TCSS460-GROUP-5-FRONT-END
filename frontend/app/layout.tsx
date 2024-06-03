@@ -46,8 +46,8 @@ export default function MessagesLayout({ children }: { children: React.ReactNode
                       <Link href="/post" color="inherit">
                         <Tab label="Post a Book" />
                       </Link>
-                      <Link href="/book" color="inherit">
-                        <Tab label="View a Book" />
+                      <Link href="/put" color="inherit">
+                        <Tab label="Update a Book's Rating" />
                       </Link>
                     </Tabs>
                   </Toolbar>

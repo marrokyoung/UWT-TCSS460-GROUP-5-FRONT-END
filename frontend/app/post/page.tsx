@@ -152,7 +152,7 @@ export default function Post() {
                     <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
                         Post a book
                     </Typography>
-                    <Link href="../" color="secondary">
+                    <Link href="../home" color="secondary">
                         Go to the home page
                     </Link>
                 </Box>

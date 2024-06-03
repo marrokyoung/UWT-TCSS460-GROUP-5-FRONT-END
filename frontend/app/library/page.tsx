@@ -5,6 +5,7 @@ import axios, { AxiosError } from "axios";
 import { IBook } from '../../../backend/src/closed/books';
 import { Container, Box, Typography, Link, Card, CardContent, CardActions, CardMedia, TextField, Select, MenuItem, FormControl, InputLabel, Pagination, Rating, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 import { CircularProgress } from "@mui/material";
+import { borders } from '@mui/system';
 
 function isAxiosError(error: unknown): error is AxiosError {
     return (error as AxiosError).isAxiosError !== undefined;
@@ -152,10 +153,10 @@ export default function LibraryPage() {
                     alignItems: "center",
                 }}
             >
-                <Typography variant="h3" component="h1" sx={{ mb: 2, color: 'white' }}>
+                <Typography variant="h3" component="h1" sx={{ mb: 2, color: 'black' }}>
                     Material UI - Next.js App Router example in TypeScript
                 </Typography>
-                <Typography variant="h4" component="h1" sx={{ mb: 2, color: 'white' }}>
+                <Typography variant="h4" component="h1" sx={{ mb: 2, color: 'black' }}>
                     Main page for TCSS 460 SP24 Group 5
                 </Typography>
                 <Link href="/post" color="secondary">
@@ -198,7 +199,7 @@ export default function LibraryPage() {
                         books.map((book, index) => {
                             console.log('Book image URL:', book.icons?.small);
                             return (
-                                <Card key={book.isbn13 || index} sx={{ mb: 2, display: 'flex', backgroundColor: 'white', color: 'white' }} onClick={() => handleClickOpen(book)}>
+                                <Card key={book.isbn13 || index} sx={{ mb: 2, display: 'flex', backgroundColor: 'white', color: 'white',  borderRadius: '16px', borderColor: 'primary.main'}} onClick={() => handleClickOpen(book)}>
                                     <CardMedia
                                         component="img"
                                         sx={{ width: 150 }}
@@ -237,7 +238,7 @@ export default function LibraryPage() {
                             onChange={handlePageChange}
                             sx={{
                                 '& .MuiPaginationItem-root': {
-                                    color: 'white', // Color of the page numbers
+                                    color: 'black', // Color of the page numbers
                                 },
                             }}
                         />

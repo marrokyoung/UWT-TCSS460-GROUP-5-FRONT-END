@@ -20,16 +20,25 @@ export default function Home() {
                 }}
             >
                 <Typography variant="h3" component="h1" sx={{ mb: 2 }}>
-                    Material UI - Next.js App Router example in TypeScript
+                    Group Five's Frontend Work Library
                 </Typography>
                 <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
                     Main page for TCSS 460 SP24
                 </Typography>
+                <Link href="/library" color="secondary">
+                    Start searching our books!
+                </Link>
                 <Link href="/post" color="secondary">
                     Go to the post page
                 </Link>
                 <Link href="/auth/login/" color="secondary">
                     Go to the login page
+                </Link>
+                <Link href ="/put" color ="secondary">
+                    Go to the update ratings page
+                </Link>
+                <Link href="/auth/register/" color="secondary">
+                    Go to the register page
                 </Link>
             </Box>
         </Container>

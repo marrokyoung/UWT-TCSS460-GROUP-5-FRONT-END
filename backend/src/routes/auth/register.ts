@@ -214,7 +214,7 @@ registerRouter.post(
     },
     (request: IUserRequest, response: Response, next: NextFunction) => {
         const theQuery =
-            'INSERT INTO Account(firstname, lastname, username, email, phone, create_date, account_role) VALUES ($1, $2, $3, $4, $5, NOW(), $6) RETURNING account_id';
+            'INSERT INTO Account(firstname, lastname, username, email, phone, account_role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING account_id';
         const values = [
             request.body.firstname,
             request.body.lastname,

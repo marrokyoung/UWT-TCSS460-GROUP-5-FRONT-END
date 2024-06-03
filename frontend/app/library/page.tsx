@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import axios, { AxiosError } from "axios";
-import { IBook } from '../../../backend/src/closed/books';
+import { IBook } from '../../../backend/src/routes/closed/books';
 import { Container, Box, Typography, Link, Card, CardContent, CardActions, CardMedia, TextField, Select, MenuItem, FormControl, InputLabel, Pagination, Rating, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 import { CircularProgress } from "@mui/material";
 import { borders } from '@mui/system';

@@ -4,6 +4,7 @@ import * as React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TextField, Button, Alert, Link, Box, Typography, Container } from "@mui/material";
+import { useAuth } from "../authcontext/authcontext";
 
 export default function Login () {
   const [email, setEmail] = useState('');
@@ -11,6 +12,7 @@ export default function Login () {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState(''); 
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,9 +32,11 @@ export default function Login () {
         const data = await response.json();
         console.log('Login successful:', data);
         setSuccessMessage('Login successful. Redirecting to dashboard...');
-        setTimeout(() => {
-          router.push('/post'); // Redirect to dashboard or another page after login
-        }, 2000);
+        // setTimeout(() => {
+        //   router.push('/home'); // Redirect to dashboard or another page after login
+        // }, 2000);
+        // Instead of simply pushing to the dashboard, we call the login function from the authcontext that does this for us
+        login(data.accessToken);
       } else {
         const errorData = await response.json();
         setErrorMessage(errorData.message);

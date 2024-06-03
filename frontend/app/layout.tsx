@@ -2,6 +2,7 @@
 import {AppBar, Box, Button, createTheme, IconButton, ThemeProvider, Toolbar, Typography} from "@mui/material";
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import HomeIcon from '@mui/icons-material/Home';
 import LoginIcon from '@mui/icons-material/Login';
 import {orange, purple} from "@mui/material/colors";
 
@@ -32,6 +33,9 @@ export default function MessagesLayout({
               Books
             </Typography>
             <Box sx={{ display: { xs: "none", sm: "block" } }}>
+                <IconButton href="/" color="inherit">
+                    <HomeIcon />
+                </IconButton>
               <IconButton href="/library" color="inherit">
                 <LibraryBooksIcon />
               </IconButton>
@@ -40,6 +44,9 @@ export default function MessagesLayout({
               </IconButton>
                 <Button variant="contained" href="/auth/login" color="inherit">
                     Log In
+                </Button>
+                <Button variant="contained" href="/auth/register" color="inherit">
+                    Register
                 </Button>
                 {/*<IconButton href="/auth/login" color="inherit">*/}
                 {/*    <LoginIcon />*/}

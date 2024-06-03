@@ -153,15 +153,12 @@ export default function LibraryPage() {
                     alignItems: "center",
                 }}
             >
-                <Typography variant="h3" component="h1" sx={{ mb: 2, color: 'black' }}>
-                    Material UI - Next.js App Router example in TypeScript
+                <Typography variant="h2" component="h1" sx={{ mb: 2, color: 'black' }}>
+                    Start Browsing Now
                 </Typography>
-                <Typography variant="h4" component="h1" sx={{ mb: 2, color: 'black' }}>
-                    Main page for TCSS 460 SP24 Group 5
-                </Typography>
-                <Link href="/post" color="secondary">
-                    Go to the about page
-                </Link>
+                {/*<Link href="/post" color="secondary">*/}
+                {/*    Go to the about page*/}
+                {/*</Link>*/}
                 <Box sx={{ mt: 4, width: '100%', maxWidth: 800 }}>
                     <Box sx={{ display: 'flex', mb: 4, alignItems: 'center' }}>
                         <FormControl sx={{ mr: 2, minWidth: 120 }}>

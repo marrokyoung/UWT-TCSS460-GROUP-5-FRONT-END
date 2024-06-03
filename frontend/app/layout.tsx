@@ -2,6 +2,8 @@
 import {AppBar, Box, createTheme, IconButton, ThemeProvider, Toolbar, Typography, Tabs, Tab} from "@mui/material";
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import HomeIcon from '@mui/icons-material/Home';
+import LoginIcon from '@mui/icons-material/Login';
 import {orange, purple} from "@mui/material/colors";
 import Link from "next/link";
 import Authentication from "./auth/authcontext/authcontext";

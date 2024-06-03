@@ -9,7 +9,6 @@ import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import {createTheme, ThemeProvider} from "@mui/material";
 
-
 export default function StartingPage() {
     const router = useRouter();
 

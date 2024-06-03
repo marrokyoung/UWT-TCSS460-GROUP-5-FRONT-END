@@ -11,5 +11,4 @@ const closedRoutes: Router = express.Router();
 closedRoutes.use('/jwt_test', checkToken, tokenTestRouter);
 // closedRoutes.use('/books', checkToken, booksRouter);
 closedRoutes.use('/books', booksRouter);
-
 export { closedRoutes };

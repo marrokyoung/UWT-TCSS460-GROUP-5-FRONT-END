@@ -29,10 +29,16 @@ export default function Home() {
                     Start searching our books!
                 </Link>
                 <Link href="/post" color="secondary">
-                    Go to the about page
+                    Go to the post page
                 </Link>
                 <Link href="/auth/login/" color="secondary">
                     Go to the login page
+                </Link>
+                <Link href ="/put" color ="secondary">
+                    Go to the update ratings page
+                </Link>
+                <Link href="/auth/register/" color="secondary">
+                    Go to the register page
                 </Link>
             </Box>
         </Container>

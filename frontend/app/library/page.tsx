@@ -23,7 +23,9 @@ export default function LibraryPage() {
     const [totalPages, setTotalPages] = React.useState(1);
     const [open, setOpen] = React.useState(false);
     const [selectedBook, setSelectedBook] = React.useState<IBook | null>(null);
-
+    const [minYear, setMinYear] = React.useState('');
+    const [maxYear, setMaxYear] = React.useState('');
+    const [deleteMessage, setDeleteMessage] = React.useState<string | null>(null);
     const handleClickOpen = (book: IBook) => {
         setSelectedBook(book);
         setOpen(true);
@@ -124,6 +126,56 @@ export default function LibraryPage() {
         setLimit(Number(event.target.value));
     };
 
+    const handleMinYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setMinYear(event.target.value);
+    };
+    
+    const handleMaxYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setMaxYear(event.target.value);
+    };
+    
+    const handleDeleteBook = async () => {
+        try {
+            const response = await axios.delete(`http://localhost:4000/books/delete_by_isbn`, {
+                params: {
+                    isbn: selectedBook?.isbn13
+                }
+            });
+            // Display success message or handle UI update after deletion
+            console.log(response.data);
+            // Close the dialog after successful deletion
+            handleClose();
+            // Refresh the page after deletion
+            window.location.reload();
+        } catch (error) {
+            // Handle error response
+            console.error('Error deleting book:', error.response?.data?.message || error.message);
+        }
+    };
+
+    const handleDeleteBooks = async () => {
+        setLoading(true); // Set loading state to true before starting the delete request
+        try {
+            const response = await axios.delete(`http://localhost:4000/books/delete_by_range`, {
+                params: {
+                    min: minYear,
+                    max: maxYear
+                }
+            });
+            setDeleteMessage(`Successfully deleted ${response.data.deletedCount} books.`);
+            // Refresh the book list after deletion
+            fetchBooks();
+        } catch (err) {
+            let errorMessage = 'An unknown error occurred';
+            if (isAxiosError(err)) {
+                errorMessage = err.response?.data?.message || err.message || errorMessage;
+            }
+            console.error('Error deleting books:', errorMessage, err);
+            setDeleteMessage(errorMessage);
+        }
+        setLoading(false);
+    };
+
     if (loading) {
         return (
             <Container>
@@ -190,8 +242,44 @@ export default function LibraryPage() {
                             }}
                         />
                     </Box>
-                    {error ? (
-                        <Typography variant="body1" sx={{ color: 'white' }}>{error}</Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4 }}>
+                        <TextField
+                            id="min-year"
+                            label="Min Year"
+                            variant="outlined"
+                            value={minYear}
+                            onChange={handleMinYearChange}
+                            sx={{ mr: 2 }}
+                        />
+                        <TextField
+                            id="max-year"
+                            label="Max Year"
+                            variant="outlined"
+                            value={maxYear}
+                            onChange={handleMaxYearChange}
+                            sx={{ mr: 2 }}
+                        />
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={handleDeleteBooks}
+                        >
+                            Delete Books
+                        </Button>
+                    </Box>
+                    {deleteMessage && (
+                        <Typography variant="body1" color="error" sx={{ mb: 2 }}>
+                            {deleteMessage}
+                        </Typography>
+                    )}
+                    <Pagination
+                        count={totalPages}
+                        page={page}
+                        onChange={handlePageChange}
+                        sx={{ mb: 4, display: 'flex', justifyContent: 'center' }}
+                    />
+                   {error ? (
+                        <Typography variant="body1" sx={{ color: 'red' }}>{error}</Typography>
                     ) : books.length > 0 ? (
                         books.map((book, index) => {
                             console.log('Book image URL:', book.icons?.small);
@@ -226,7 +314,7 @@ export default function LibraryPage() {
                             );
                         })
                     ) : (
-                        <Typography variant="body1" sx={{ color: 'white' }}>No books found</Typography>
+                        <Typography variant="body1" sx={{ color: 'red' }}>No books found</Typography>
                     )}
                     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
                         <Pagination
@@ -306,6 +394,9 @@ export default function LibraryPage() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
+                    <Button onClick={handleDeleteBook} color="error">
+                        Delete Book
+                    </Button>
                     <Button onClick={handleClose} color="primary">
                         Close
                     </Button>

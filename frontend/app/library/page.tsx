@@ -3,9 +3,8 @@
 import * as React from "react";
 import axios, { AxiosError } from "axios";
 import { IBook } from '../../../backend/src/routes/closed/books';
-import { Container, Box, Typography, Link, Card, CardContent, CardActions, CardMedia, TextField, Select, MenuItem, FormControl, InputLabel, Pagination, Rating, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
+import { Container, Box, Typography, Card, CardContent, CardMedia, TextField, Select, MenuItem, FormControl, InputLabel, Pagination, Rating, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 import { CircularProgress } from "@mui/material";
-import { borders } from '@mui/system';
 
 function isAxiosError(error: unknown): error is AxiosError {
     return (error as AxiosError).isAxiosError !== undefined;
@@ -208,11 +207,8 @@ export default function LibraryPage() {
                 <Typography variant="h2" component="h1" sx={{ mb: 2, color: 'black' }}>
                     Start Browsing Now
                 </Typography>
-                <Link href="../home" color="secondary">
-                    Go to the home page
-                </Link>
-                {/*<Link href="/post" color="secondary">*/}
-                {/*    Go to the about page*/}
+                {/*<Link href="../home" color="secondary">*/}
+                {/*    Go to the home page*/}
                 {/*</Link>*/}
                 <Box sx={{ mt: 4, width: '100%', maxWidth: 800 }}>
                     <Box sx={{ display: 'flex', mb: 4, alignItems: 'center' }}>

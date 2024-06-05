@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react';
-import { Container, Typography, Box, TextField, Button, Alert, Link } from '@mui/material';
+import { Container, Typography, Box, TextField, Button, Alert } from '@mui/material';
 
 interface FormState {
   isbn13: string;
@@ -86,9 +86,9 @@ const UpdateBookRatingsForm = () => {
           <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
             Update Book Rating
           </Typography>
-          <Link href="../home" color="secondary">
-            Go to the home page
-          </Link>
+          {/*<Link href="../home" color="secondary">*/}
+          {/*  Go to the home page*/}
+          {/*</Link>*/}
         </Box>
         <Box
           component="form"
